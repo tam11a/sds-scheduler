@@ -11,16 +11,13 @@ import TableView from "./table-view";
 
 import { RefreshCcwIcon, Users2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { cn } from "@/lib/utils";
 
 export default function StaffPage() {
   const { search, view } = useList();
@@ -41,6 +38,7 @@ export default function StaffPage() {
     fetchStaff();
   }, [search, status]);
 
+  // Loading State
   if (loading) {
     return (
       <Empty className="from-muted/80 to-background h-full bg-linear-to-b from-30%">
@@ -57,6 +55,7 @@ export default function StaffPage() {
     );
   }
 
+  // No Data State
   if (staffList.length === 0) {
     return (
       <Empty className="from-muted/80 to-background h-full bg-linear-to-b from-30%">
@@ -74,6 +73,7 @@ export default function StaffPage() {
     );
   }
 
+  // Data Loaded State
   return (
     <div>
       {view === "table-view" ? (
