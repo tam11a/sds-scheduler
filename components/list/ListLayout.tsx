@@ -12,7 +12,11 @@ export default function ListLayout({
     <div>
       <header className="flex justify-between items-center gap-2 pb-2">
         <div>
-          <Input placeholder="Search staff..." className="md:min-w-2xs" />
+          <Input
+            placeholder="Search staff..."
+            type="search"
+            className="md:min-w-2xs"
+          />
         </div>
         <div className="flex-1">
           <ToggleGroup
