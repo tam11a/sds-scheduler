@@ -3,10 +3,11 @@ import { parseAsStringEnum } from "nuqs/server";
 
 export const staffFilterParams = {
   status: parseAsStringEnum([
+    "ALL",
     StaffStatus.ACTIVE,
     StaffStatus.ONBOARDING,
     StaffStatus.TERMINATED,
   ])
-    .withDefault(StaffStatus.ONBOARDING)
+    .withDefault("ALL")
     .withOptions({ clearOnDefault: true }),
 };

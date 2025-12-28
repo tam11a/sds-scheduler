@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 interface StaffFilters {
   search?: string;
-  status?: StaffStatus;
+  status?: StaffStatus | "ALL";
 }
 
 export async function listStaff(filters?: StaffFilters) {
@@ -20,8 +20,10 @@ export async function listStaff(filters?: StaffFilters) {
           { email: { contains: filters?.search || "" } },
           { phone: { contains: filters?.search || "" } },
         ],
-        // Add more filters as needed
-        AND: [{ status: filters?.status }],
+        AND:
+          filters?.status && filters.status !== "ALL"
+            ? [{ status: filters.status }]
+            : [],
       },
     });
     return { message: "List of staff members", data: staffMembers };

@@ -23,6 +23,7 @@ export default function StaffLayout({
           onValueChange={setStatus}
           variant={"segmented"}
         >
+          <ToggleGroupItem value={"ALL"}>All Staff</ToggleGroupItem>
           <ToggleGroupItem value={StaffStatus.ONBOARDING}>
             New Staff
           </ToggleGroupItem>
@@ -36,7 +37,7 @@ export default function StaffLayout({
       }
       action={
         <>
-          <Button variant={"outline"}>
+          <Button variant={"outline"} disabled>
             <Filter /> Filter
           </Button>
           <CreateStaff />
