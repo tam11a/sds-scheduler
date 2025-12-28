@@ -1,0 +1,43 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Calendar, Filter, ListTree, Plus } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+export default function ListLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <header className="flex justify-between items-center gap-2 pb-2">
+        <div>
+          <Input placeholder="Search staff..." className="md:min-w-2xs" />
+        </div>
+        <div className="flex-1">
+          <ToggleGroup
+            type="single"
+            defaultValue="weekly-view"
+            variant={"outline"}
+          >
+            <ToggleGroupItem value="weekly-view">
+              <Calendar />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="list-view">
+              <ListTree />
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+        <div className="inline-flex gap-2">
+          <Button>
+            <Filter /> Filter
+          </Button>
+          <Button>
+            <Plus /> Add Staff
+          </Button>
+        </div>
+      </header>
+      <main>{children}</main>
+    </div>
+  );
+}
