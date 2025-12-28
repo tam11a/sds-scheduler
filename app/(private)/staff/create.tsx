@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   full_name: z.string().min(3, {
@@ -64,11 +65,12 @@ export default function CreateStaff() {
               Fill in the details to create a new staff member.
             </SheetDescription>
           </SheetHeader>
+          <Separator />
           {/* Form fields for creating staff would go here */}
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-8 px-4"
+              className="space-y-8 px-4 py-4"
             >
               <FormField
                 control={form.control}
