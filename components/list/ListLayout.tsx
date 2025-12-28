@@ -18,7 +18,7 @@ export default function ListLayout({
           <ToggleGroup
             type="single"
             defaultValue="weekly-view"
-            variant={"outline"}
+            variant={"segmented"}
           >
             <ToggleGroupItem value="weekly-view">
               <Calendar />
@@ -29,7 +29,7 @@ export default function ListLayout({
           </ToggleGroup>
         </div>
         <div className="inline-flex gap-2">
-          <Button>
+          <Button variant={"outline"}>
             <Filter /> Filter
           </Button>
           <Button>
