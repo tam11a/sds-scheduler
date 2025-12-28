@@ -15,7 +15,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export default function Page() {
+export default function PrivateLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -43,13 +47,7 @@ export default function Page() {
           </div>
         </header>
         <SidebarInsetContent className="overflow-y-auto">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-          <div className="bg-muted/50 min-h-screen rounded-xl md:min-h-screen" />
-          <div className="bg-muted/50 min-h-screen rounded-xl md:min-h-screen" />
+          {children}
         </SidebarInsetContent>
       </SidebarInset>
     </SidebarProvider>
