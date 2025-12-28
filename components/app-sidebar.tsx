@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import {
+  CalendarCog,
   Command,
   Frame,
   LayoutDashboard,
@@ -41,29 +42,19 @@ const data = {
           icon: LayoutDashboard,
         },
         {
-          title: "Staff",
-          url: "/staff",
-          icon: Users,
+          title: "Scheduler",
+          url: "/scheduler",
+          icon: CalendarCog,
         },
       ],
     },
     {
-      groupTitle: "Analytics",
+      groupTitle: "Management",
       items: [
         {
-          title: "Design Engineering",
-          url: "#",
-          icon: Frame,
-        },
-        {
-          title: "Sales & Marketing",
-          url: "#",
-          icon: PieChart,
-        },
-        {
-          title: "Travel",
-          url: "#",
-          icon: Map,
+          title: "Staff",
+          url: "/staff",
+          icon: Users,
         },
       ],
     },

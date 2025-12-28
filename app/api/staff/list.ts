@@ -9,7 +9,6 @@ interface StaffFilters {
 }
 
 export async function listStaff(filters?: StaffFilters) {
-  console.log("Filters in listStaff:", filters);
   try {
     const staffMembers = await prisma.staff.findMany({
       where: {
@@ -20,6 +19,7 @@ export async function listStaff(filters?: StaffFilters) {
           { email: { contains: filters?.search || "" } },
           { phone: { contains: filters?.search || "" } },
         ],
+        // Add more filters as needed
         AND:
           filters?.status && filters.status !== "ALL"
             ? [{ status: filters.status }]
