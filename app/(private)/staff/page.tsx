@@ -9,6 +9,19 @@ import { Staff } from "@/lib/generated/prisma/client";
 import GridView from "./grid-view";
 import TableView from "./table-view";
 
+import { RefreshCcwIcon, Users2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { cn } from "@/lib/utils";
+
 export default function StaffPage() {
   const { search, view } = useList();
   const { status } = useStaffFilter();
@@ -29,11 +42,36 @@ export default function StaffPage() {
   }, [search, status]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Empty className="from-muted/80 to-background h-full bg-linear-to-b from-30%">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <RefreshCcwIcon className="animate-spin" />
+          </EmptyMedia>
+          <EmptyTitle>Loading Staff...</EmptyTitle>
+          <EmptyDescription>
+            Please wait while we load the staff members.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
   }
 
   if (staffList.length === 0) {
-    return <p>No staff found.</p>;
+    return (
+      <Empty className="from-muted/80 to-background h-full bg-linear-to-b from-30%">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Users2 />
+          </EmptyMedia>
+          <EmptyTitle>No Staff</EmptyTitle>
+          <EmptyDescription>
+            No staff members found. Try adjusting your filters or adding new
+            staff.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
   }
 
   return (
