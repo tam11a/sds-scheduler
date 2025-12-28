@@ -23,6 +23,7 @@ export function handlePrismaError(
       case "P2002":
         // Unique constraint violation (e.g., duplicate email)
         const fields = ["email", "phone"];
+        // TODO: Parse fields from error.meta if available
         return {
           success: false,
           error: `A record with this data may already exists.`,

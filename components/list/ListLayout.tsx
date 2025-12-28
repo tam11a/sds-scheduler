@@ -1,13 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { Filter, LayoutGrid, Table2 } from "lucide-react";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import ListSearch from "./Search";
-import CreateStaff from "@/app/(private)/staff/create";
+import ViewToggle from "./ViewToggle";
 
 export default function ListLayout({
   children,
+  action,
+  secondary_action,
 }: {
   children: React.ReactNode;
+  action?: React.ReactNode;
+  secondary_action?: React.ReactNode;
 }) {
   return (
     <div>
@@ -16,39 +17,10 @@ export default function ListLayout({
           <ListSearch />
         </div>
         <div className="flex-1 inline-flex items-center gap-2">
-          <ToggleGroup
-            type="single"
-            defaultValue="card-view"
-            variant={"segmented"}
-          >
-            <ToggleGroupItem value="card-view">
-              <LayoutGrid />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="table-view">
-              <Table2 />
-            </ToggleGroupItem>
-          </ToggleGroup>
-          <ToggleGroup
-            type="single"
-            defaultValue="current-staff"
-            variant={"segmented"}
-          >
-            <ToggleGroupItem value="current-staff">
-              Current Staff
-            </ToggleGroupItem>
-            <ToggleGroupItem value="new-staff">New Staff</ToggleGroupItem>
-            <ToggleGroupItem value="terminated-staff">
-              Terminated
-            </ToggleGroupItem>
-            <ToggleGroupItem value="all-staff">All Staff</ToggleGroupItem>
-          </ToggleGroup>
+          <ViewToggle />
+          {secondary_action}
         </div>
-        <div className="inline-flex gap-2">
-          <Button variant={"outline"}>
-            <Filter /> Filter
-          </Button>
-          <CreateStaff />
-        </div>
+        <div className="inline-flex gap-2">{action}</div>
       </header>
       <main>{children}</main>
     </div>
