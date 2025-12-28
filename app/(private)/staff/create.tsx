@@ -39,22 +39,28 @@ import {
 } from "@/components/ui/select";
 import { createStaff } from "@/app/api/staff/create";
 import { toast } from "sonner";
+import { parseAsBoolean, useQueryState } from "nuqs";
 
 export default function CreateStaff() {
-  // 1. Define your form.
+  const [open, onOpenChange] = useQueryState(
+    "create-stuff",
+    parseAsBoolean
+      .withOptions({
+        clearOnDefault: true,
+      })
+      .withDefault(false)
+  );
+
   const form = useForm<CreateStaffInput>({
     resolver: zodResolver(staffCreateSchema),
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: CreateStaffInput) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-
     const response = await createStaff(values);
     if (response.success) {
       toast.success("Staff created successfully");
+      onOpenChange(false);
+      form.reset();
     } else {
       if (!!response.fields?.length) {
         response.fields?.map((field) =>
@@ -71,7 +77,7 @@ export default function CreateStaff() {
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
         <Button>
           <Plus /> Add Staff
