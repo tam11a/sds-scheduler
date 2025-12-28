@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, Filter, ListTree, Plus } from "lucide-react";
+import { Filter, LayoutGrid, Plus, Table2 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export default function ListLayout({
@@ -21,14 +21,14 @@ export default function ListLayout({
         <div className="flex-1 inline-flex items-center gap-2">
           <ToggleGroup
             type="single"
-            defaultValue="weekly-view"
+            defaultValue="card-view"
             variant={"segmented"}
           >
-            <ToggleGroupItem value="weekly-view">
-              <Calendar />
+            <ToggleGroupItem value="card-view">
+              <LayoutGrid />
             </ToggleGroupItem>
-            <ToggleGroupItem value="list-view">
-              <ListTree />
+            <ToggleGroupItem value="table-view">
+              <Table2 />
             </ToggleGroupItem>
           </ToggleGroup>
           <ToggleGroup
