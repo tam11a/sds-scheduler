@@ -27,8 +27,8 @@ import Link from "next/link";
 
 const data = {
   org: {
-    title: "Acme Inc",
-    subtitle: "Enterprise",
+    title: "Sydney Disability Support",
+    subtitle: "Enterprise CRM",
     logo: null,
   },
   navMain: [
@@ -106,8 +106,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   )
                 }
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{data.org.title}</span>
-                  <span className="truncate text-xs">{data.org.subtitle}</span>
+                  <span className="truncate font-bold text-sm">
+                    {data.org.title}
+                  </span>
+                  <span className="truncate text-xs font-semibold text-sidebar-foreground/70">
+                    {data.org.subtitle}
+                  </span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -125,6 +129,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             />
           ))
         }
+
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
     </Sidebar>
