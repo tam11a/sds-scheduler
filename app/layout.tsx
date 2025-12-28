@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Afacad } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const afacad = Afacad({
@@ -28,6 +29,7 @@ export default function RootLayout({
         className={`${afacad.variable} ${geistMono.variable} font-sans antialiased`}
       >
         {children}
+        <Toaster position="top-center" />
       </body>
     </html>
   );
