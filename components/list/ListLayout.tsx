@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Filter, LayoutGrid, Plus, Table2 } from "lucide-react";
+import { Filter, LayoutGrid, Table2 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import ListSearch from "./Search";
+import CreateStaff from "@/app/(private)/staff/create";
 
 export default function ListLayout({
   children,
@@ -12,11 +13,7 @@ export default function ListLayout({
     <div>
       <header className="flex justify-between items-center gap-2 pb-2">
         <div>
-          <Input
-            placeholder="Search staff..."
-            type="search"
-            className="md:min-w-2xs"
-          />
+          <ListSearch />
         </div>
         <div className="flex-1 inline-flex items-center gap-2">
           <ToggleGroup
@@ -50,9 +47,7 @@ export default function ListLayout({
           <Button variant={"outline"}>
             <Filter /> Filter
           </Button>
-          <Button>
-            <Plus /> Add Staff
-          </Button>
+          <CreateStaff />
         </div>
       </header>
       <main>{children}</main>
