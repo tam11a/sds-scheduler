@@ -18,7 +18,7 @@ export default function ListLayout({
             className="md:min-w-2xs"
           />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 inline-flex items-center gap-2">
           <ToggleGroup
             type="single"
             defaultValue="weekly-view"
@@ -30,6 +30,20 @@ export default function ListLayout({
             <ToggleGroupItem value="list-view">
               <ListTree />
             </ToggleGroupItem>
+          </ToggleGroup>
+          <ToggleGroup
+            type="single"
+            defaultValue="current-staff"
+            variant={"segmented"}
+          >
+            <ToggleGroupItem value="current-staff">
+              Current Staff
+            </ToggleGroupItem>
+            <ToggleGroupItem value="new-staff">New Staff</ToggleGroupItem>
+            <ToggleGroupItem value="terminated-staff">
+              Terminated
+            </ToggleGroupItem>
+            <ToggleGroupItem value="all-staff">All Staff</ToggleGroupItem>
           </ToggleGroup>
         </div>
         <div className="inline-flex gap-2">

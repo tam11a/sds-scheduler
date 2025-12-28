@@ -25,6 +25,12 @@ enum SupportType {
   OTHER
 }
 
+enum StaffStatus {
+  ONBOARDING
+  ACTIVE
+  TERMINATED
+}
+
 model Staff {
   id Int @id @default(autoincrement())
 
@@ -35,6 +41,7 @@ model Staff {
   gender    Gender
   email     String  @unique
   phone     String  @unique
+  status   StaffStatus @default(ONBOARDING)
 
   // Additional Fields
   support_type                   SupportType?
