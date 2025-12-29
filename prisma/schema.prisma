@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NONBINARY
+}
+
+enum SupportType {
+  NURSE
+  ALLIED_HEALTH
+  PERSONAL_CARE
+  DAILY_LIVING
+  COMMUNITY
+  OTHER
+}
+
+enum StaffStatus {
+  ONBOARDING
+  ACTIVE
+  TERMINATED
+}
+
+model Staff {
+  id Int @id @default(autoincrement())
+
+  // Personal Information
+  avatar    String?
+  full_name String
+  address   String?
+  gender    Gender
+  email     String  @unique
+  phone     String  @unique
+  status   StaffStatus @default(ONBOARDING)
+
+  // Additional Fields
+  support_type                   SupportType?
+  preferred_weekly_working_hours Int?
+  preferred_work_starting_date   DateTime?
+  preferred_work_address         String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  schedules Schedule[]
+}
+
+enum RepeatitiveFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model ScheduleSeries {
+  id Int @id @default(autoincrement())
+
+  // The logic used to generate the schedules
+  frequency    RepeatitiveFrequency 
+  interval     Int                 @default(1) // e.g., 1 = Every Day, 2 = Every 2 Days
+  startDate    DateTime
+  endDate      DateTime?           // Null means "Forever" (though you should limit generation)
+  
+  // Track when the series was created
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  // Relation: One series has many individual schedule instances
+  schedules    Schedule[]
+}
+
+model Schedule {
+  id Int @id @default(autoincrement())
+
+  // Relations
+  staff_id Int
+  staff    Staff @relation(fields: [staff_id], references: [id])
+
+  // Time & Location
+  work_time_start DateTime
+  work_time_end   DateTime
+  work_address    String
+  shift_bonus     Float?
+
+  // Additional
+  instructions String?
+
+  // Repeating Relation
+  // If this is null, it's a one-off event. 
+  // If it has an ID, it belongs to a recurring pattern.
+  series_id Int?
+  series    ScheduleSeries? @relation(fields: [series_id], references: [id], onDelete: SetNull)
+
+  // Exceptions
+  // Useful if you edit a specific day and want to mark it as "diverged" from the series
+  is_exception Boolean @default(false)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

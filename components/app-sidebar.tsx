@@ -2,16 +2,15 @@
 
 import * as React from "react";
 import {
-  BookOpen,
-  Bot,
+  CalendarCog,
   Command,
   Frame,
+  LayoutDashboard,
   LifeBuoy,
   Map,
   PieChart,
   Send,
-  Settings2,
-  SquareTerminal,
+  Users,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -25,100 +24,42 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 const data = {
   org: {
-    title: "Acme Inc",
-    subtitle: "Enterprise",
+    title: "Sydney Disability Support",
+    subtitle: "Enterprise CRM",
     logo: null,
   },
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
+      groupTitle: "General",
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Dashboard",
+          url: "/dashboard",
+          icon: LayoutDashboard,
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Scheduler",
+          url: "/scheduler",
+          icon: CalendarCog,
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      groupTitle: "Management",
       items: [
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Staff",
+          url: "/staff",
+          icon: Users,
         },
       ],
     },
   ],
+
   navSecondary: [
     {
       title: "Support",
@@ -131,23 +72,6 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [
-    {
-      title: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      title: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      title: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -157,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/dashboard">
                 {
                   /* If you have a logo, you can replace this div with an Image component */
                   data.org.logo ? (
@@ -173,17 +97,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   )
                 }
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{data.org.title}</span>
-                  <span className="truncate text-xs">{data.org.subtitle}</span>
+                  <span className="truncate font-bold text-sm">
+                    {data.org.title}
+                  </span>
+                  <span className="truncate text-xs font-semibold text-sidebar-foreground/70">
+                    {data.org.subtitle}
+                  </span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain groupTitle="General" items={data.navMain} />
-        <NavMain groupTitle="Projects" items={data.projects} />
+        {
+          /* You can loop over multiple NavMain groups if needed */
+          data.navMain.map((group, index) => (
+            <NavMain
+              key={index}
+              groupTitle={group.groupTitle}
+              items={group.items}
+            />
+          ))
+        }
+
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
     </Sidebar>
