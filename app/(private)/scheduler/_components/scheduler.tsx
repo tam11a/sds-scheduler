@@ -114,9 +114,9 @@ export default function SchedulerComponent({
           <EmptyMedia variant="icon">
             <RefreshCcwIcon className="animate-spin" />
           </EmptyMedia>
-          <EmptyTitle>Loading Staff...</EmptyTitle>
+          <EmptyTitle>Loading Schedules...</EmptyTitle>
           <EmptyDescription>
-            Please wait while we load the staff members.
+            Please wait while we load the schedules.
           </EmptyDescription>
         </EmptyHeader>
       </Empty>

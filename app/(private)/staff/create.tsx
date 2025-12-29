@@ -8,9 +8,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
-import { Plus } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -41,12 +39,22 @@ import { createStaff } from "@/app/api/staff/create";
 import { toast } from "sonner";
 import useDrawer from "@/hooks/use-drawer/use-drawer";
 
-export default function CreateStaff() {
+interface CreateStaffProps {
+  onSuccess?: () => void;
+}
+
+export default function CreateStaff({ onSuccess }: CreateStaffProps) {
   const { createStaffOpen: open, setCreateStaffOpen: onOpenChange } =
     useDrawer();
 
   const form = useForm<CreateStaffInput>({
     resolver: zodResolver(staffCreateSchema),
+    defaultValues: {
+      full_name: "",
+      email: "",
+      phone: "",
+      gender: undefined,
+    },
   });
 
   async function onSubmit(values: CreateStaffInput) {
@@ -55,6 +63,7 @@ export default function CreateStaff() {
       toast.success("Staff created successfully");
       onOpenChange(false);
       form.reset();
+      onSuccess?.();
     } else {
       if (!!response.fields?.length) {
         response.fields?.map((field) =>
@@ -72,11 +81,11 @@ export default function CreateStaff() {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetTrigger asChild>
+      {/* <SheetTrigger asChild>
         <Button>
           <Plus /> <span className="hidden sm:inline-flex">Add Staff</span>
         </Button>
-      </SheetTrigger>
+      </SheetTrigger> */}
       <SheetContent>
         <ScrollArea className="h-full">
           <SheetHeader>
