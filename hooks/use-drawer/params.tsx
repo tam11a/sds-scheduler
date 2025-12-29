@@ -1,4 +1,4 @@
-import { parseAsBoolean } from "nuqs/server";
+import { parseAsBoolean, parseAsInteger } from "nuqs/server";
 
 export const drawerOpenParams = {
   createSchedule: parseAsBoolean
@@ -11,4 +11,9 @@ export const drawerOpenParams = {
       clearOnDefault: true,
     })
     .withDefault(false),
+  scheduleDetails: parseAsInteger
+    .withOptions({
+      clearOnDefault: true,
+    })
+    .withDefault(0),
 };

@@ -13,6 +13,9 @@ function useDrawer() {
     createStaffOpen: params.createStaff,
     setCreateStaffOpen: (open: boolean) =>
       setSearchParams({ createStaff: open }),
+    scheduleDetailsId: params.scheduleDetails,
+    setScheduleDetailsId: (id: number) =>
+      setSearchParams({ scheduleDetails: id }),
   };
 }
 

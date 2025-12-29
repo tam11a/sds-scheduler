@@ -1,17 +1,23 @@
 import { Schedule } from "@/lib/generated/prisma/browser";
 import moment from "moment";
 import { cn } from "@/lib/utils";
+import useDrawer from "@/hooks/use-drawer/use-drawer";
 
 interface ScheduleCardProps {
   schedule: Schedule;
   mode: "compact" | "detailed";
-  onClick?: () => void;
 }
 
-export function ScheduleCard({ schedule, mode, onClick }: ScheduleCardProps) {
+export function ScheduleCard({ schedule, mode }: ScheduleCardProps) {
+  const { setScheduleDetailsId } = useDrawer();
+
+  const handleClick = () => {
+    setScheduleDetailsId(schedule.id);
+  };
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       className={cn(
         "bg-primary/20 text-primary rounded cursor-pointer hover:bg-primary/10 transition-colors",
         mode === "compact" ? "text-xs p-1.5 px-2" : "text-xs p-2"

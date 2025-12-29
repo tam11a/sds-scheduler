@@ -12,6 +12,7 @@ import NotApplicable from "@/components/ui/not-applicable";
 import { Badge } from "@/components/ui/badge";
 import { getStatusColor, StatusIcon } from "@/lib/staff-status";
 import { Mars } from "lucide-react";
+import { generateColor, getInitials } from "@/lib/generate-color";
 
 export default function TableView({ staffList }: { staffList: Staff[] }) {
   return (
@@ -36,12 +37,13 @@ export default function TableView({ staffList }: { staffList: Staff[] }) {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={staff.avatar || ""} />
-                    <AvatarFallback className="bg-emerald-800 text-white">
-                      {staff.full_name
-                        .split(" ")
-                        .map((n: string) => n[0])
-                        .join("")
-                        .toUpperCase()}
+                    <AvatarFallback
+                      className="text-white"
+                      style={{
+                        backgroundColor: generateColor(staff.full_name),
+                      }}
+                    >
+                      {getInitials(staff.full_name)}
                     </AvatarFallback>
                   </Avatar>
                   <span className="font-medium">{staff.full_name}</span>

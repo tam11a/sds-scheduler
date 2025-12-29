@@ -3,13 +3,22 @@ import { listSchedules } from "./list";
 import { createSchedule } from "./create";
 import { updateSchedule } from "./update";
 import { deleteSchedule } from "./delete";
+import { readSchedule } from "./read";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
+  const id = searchParams.get("id");
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
   const staffIds = searchParams.get("staffIds");
 
+  // If id is provided, return single schedule
+  if (id) {
+    const response = await readSchedule(parseInt(id));
+    return NextResponse.json(response);
+  }
+
+  // Otherwise, return list of schedules
   if (!startDate || !endDate) {
     return NextResponse.json(
       { success: false, error: "startDate and endDate are required" },

@@ -10,6 +10,7 @@ import {
 import NotApplicable from "@/components/ui/not-applicable";
 import { Staff } from "@/lib/generated/prisma/client";
 import { getStatusColor, StatusIcon } from "@/lib/staff-status";
+import { generateColor, getInitials } from "@/lib/generate-color";
 
 export default function GridView({ staffList }: { staffList: Staff[] }) {
   return (
@@ -20,12 +21,11 @@ export default function GridView({ staffList }: { staffList: Staff[] }) {
             <div className="flex items-center gap-3">
               <Avatar>
                 <AvatarImage src={staff.avatar || ""} alt={staff.full_name} />
-                <AvatarFallback className="bg-emerald-800 text-white">
-                  {staff.full_name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .toUpperCase()}
+                <AvatarFallback
+                  className="text-white"
+                  style={{ backgroundColor: generateColor(staff.full_name) }}
+                >
+                  {getInitials(staff.full_name)}
                 </AvatarFallback>
               </Avatar>
               <div>
