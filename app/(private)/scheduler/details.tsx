@@ -134,22 +134,16 @@ export default function ScheduleDetails({
       const data = await response.json();
 
       if (data.success) {
-        toast.success("Schedule deleted", {
-          description: "The schedule has been successfully deleted.",
-        });
+        toast.success("The schedule has been successfully deleted.");
         setShowDeleteDialog(false);
         onRefetch?.();
         handleClose();
       } else {
-        toast.error("Error", {
-          description: data.error || "Failed to delete schedule",
-        });
+        toast.error(data.error || "Failed to delete schedule");
       }
     } catch (error) {
       console.error("Failed to delete schedule:", error);
-      toast.error("Error", {
-        description: "Failed to delete schedule",
-      });
+      toast.error("Failed to delete schedule");
     } finally {
       setIsDeleting(false);
     }
