@@ -23,6 +23,7 @@ import {
 } from "@/lib/scheduler-date-handler";
 import moment from "moment";
 import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
 
 interface SchedulerComponentProps {
   staffs: Staff[];
@@ -152,7 +153,7 @@ export default function SchedulerComponent({
                         ) : (
                           <div className="h-full min-h-15 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                             <span className="text-xs text-muted-foreground">
-                              +
+                              <Plus className="inline-block w-4 h-4 animate-pulse" />
                             </span>
                           </div>
                         )}
