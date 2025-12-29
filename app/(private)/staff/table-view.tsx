@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Staff } from "@/lib/generated/prisma/client";
 import NotApplicable from "@/components/ui/not-applicable";
 import { Badge } from "@/components/ui/badge";
-import { getStatusColor, StatusIcon } from "@/lib/staff-status";
+import { getStatusColor, StatusIcon } from "@/lib/staff-status-with-icon";
 import { Mars } from "lucide-react";
 import { generateColor, getInitials } from "@/lib/generate-color";
 

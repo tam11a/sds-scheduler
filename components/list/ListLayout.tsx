@@ -19,20 +19,24 @@ export default function ListLayout({
   action?: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div></div>}>
       <div>
-        <header className="flex justify-between items-center gap-2 pb-2">
-          <div>{primary_action || <ListSearch />}</div>
-          <div
-            className={cn(
-              "flex-1 inline-flex items-center gap-2",
-              secondary_centered && "justify-center"
-            )}
-          >
-            {view_toggle && <ViewToggle />}
-            {secondary_action}
+        <header className="flex flex-col md:flex-row justify-between items-center gap-2 pb-2 w-full">
+          <div className="w-full md:w-auto">
+            {primary_action || <ListSearch />}
           </div>
-          <div className="inline-flex gap-2">{action}</div>
+          <div className="flex flex-row flex-1 items-center justify-between gap-2 w-full">
+            <div
+              className={cn(
+                "flex-1 inline-flex items-center gap-2",
+                secondary_centered && "justify-center"
+              )}
+            >
+              {view_toggle && <ViewToggle />}
+              {secondary_action}
+            </div>
+            <div className="inline-flex gap-2">{action}</div>
+          </div>
         </header>
         <main>{children}</main>
       </div>

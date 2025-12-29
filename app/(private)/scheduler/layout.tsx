@@ -119,7 +119,7 @@ export default function StaffLayout({
             variant={"outline"}
             onClick={() => setCreateScheduleOpen(true)}
           >
-            <Plus /> Schedule
+            <Plus /> <span className="hidden sm:inline-flex">Add Schedule</span>
           </Button>
         </>
       }

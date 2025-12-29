@@ -13,7 +13,6 @@ import {
   Calendar,
   CalendarClock,
   UserPlus,
-  GraduationCap,
   TrendingUp,
 } from "lucide-react";
 import { generateColor, getInitials } from "@/lib/generate-color";

@@ -1,8 +1,12 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { StaffStatus } from "@/lib/generated/prisma/enums";
+import { connection } from "next/server";
 
 export async function getDashboardStats() {
+  // Access connection to enable dynamic rendering
+  await connection();
+
   try {
     // Get total staff count
     const totalStaff = await prisma.staff.count();

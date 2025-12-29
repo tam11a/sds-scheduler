@@ -2,6 +2,7 @@
 
 import { StaffStatus } from "@/lib/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
+import { connection } from "next/server";
 
 interface StaffFilters {
   search?: string;
@@ -9,6 +10,7 @@ interface StaffFilters {
 }
 
 export async function listStaff(filters?: StaffFilters) {
+  await connection();
   try {
     const staffMembers = await prisma.staff.findMany({
       where: {

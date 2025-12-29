@@ -74,7 +74,7 @@ export default function CreateStaff() {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
         <Button>
-          <Plus /> Add Staff
+          <Plus /> <span className="hidden sm:inline-flex">Add Staff</span>
         </Button>
       </SheetTrigger>
       <SheetContent>

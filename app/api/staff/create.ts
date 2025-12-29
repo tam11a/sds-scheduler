@@ -6,7 +6,6 @@ import { handlePrismaError, ApiResponse } from "@/lib/prisma-error-handler";
 import { Staff } from "@/lib/generated/prisma/client";
 import { PrismaClientKnownRequestError } from "@/lib/generated/prisma/internal/prismaNamespace";
 import { CreateStaffInput } from "./schema";
-import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function createStaff(
   data: CreateStaffInput
@@ -28,8 +27,6 @@ export async function createStaff(
       },
     });
 
-    revalidateTag("staff-list", "max");
-    revalidatePath("/(private)/staff", "page");
     return {
       success: true,
       data: staff,

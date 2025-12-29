@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/card";
 import NotApplicable from "@/components/ui/not-applicable";
 import { Staff } from "@/lib/generated/prisma/client";
-import { getStatusColor, StatusIcon } from "@/lib/staff-status";
+import { getStatusColor, StatusIcon } from "@/lib/staff-status-with-icon";
 import { generateColor, getInitials } from "@/lib/generate-color";
 
 export default function GridView({ staffList }: { staffList: Staff[] }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
       {staffList.map((staff) => (
         <Card key={staff.id} className="gap-1 shadow-none">
           <CardHeader className="">
