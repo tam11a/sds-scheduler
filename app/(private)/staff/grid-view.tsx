@@ -17,7 +17,7 @@ export default function GridView({ staffList }: { staffList: Staff[] }) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
       {staffList.map((staff) => (
         <Card key={staff.id} className="gap-1 shadow-none">
-          <CardHeader className="">
+          <CardHeader>
             <div className="flex items-center gap-3">
               <Avatar>
                 <AvatarImage src={staff.avatar || ""} alt={staff.full_name} />
@@ -39,25 +39,27 @@ export default function GridView({ staffList }: { staffList: Staff[] }) {
           <CardContent>
             <table className="text-sm w-full">
               <tbody>
-                <tr className="leading-loose">
-                  <td className="font-medium pr-2 min-w-1/3">Email</td>{" "}
+                <tr>
+                  <td className="font-medium pr-2 min-w-1/3 py-1">Email</td>{" "}
                   {/* 
                   TODO: Handle long email addresses with ellipsis and tooltip
                   */}
                   <td className="text-ellipsis">{staff.email}</td>
                 </tr>
-                <tr className="leading-loose">
-                  <td className="font-medium pr-2 min-w-1/3">Phone</td>{" "}
+                <tr>
+                  <td className="font-medium pr-2 min-w-1/3 py-1">Phone</td>{" "}
                   <td className="text-ellipsis">{staff.phone}</td>
                 </tr>
-                <tr className="leading-loose">
-                  <td className="font-medium pr-2 min-w-1/3">Support Type</td>{" "}
+                <tr>
+                  <td className="font-medium pr-2 min-w-1/3 py-1">
+                    Support Type
+                  </td>
                   <td className="text-ellipsis">
                     {staff.support_type || <NotApplicable />}
                   </td>
                 </tr>
-                <tr className="leading-loose">
-                  <td className="font-medium pr-2 min-w-1/3">Status</td>{" "}
+                <tr>
+                  <td className="font-medium pr-2 min-w-1/3 py-1">Status</td>{" "}
                   <td>
                     <Badge
                       variant="default"
