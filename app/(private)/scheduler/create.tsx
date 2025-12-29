@@ -73,6 +73,7 @@ export default function CreateSchedule({
     defaultValues: {
       shift_bonus: 0,
       instructions: "",
+      work_address: "",
     },
   });
 
@@ -109,6 +110,8 @@ export default function CreateSchedule({
       form.reset({
         shift_bonus: 0,
         staff_id: staffId,
+        work_address: "",
+        instructions: "",
       });
       setStartDateTime(defaultStartTime);
       setDurationHours(2);
