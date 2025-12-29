@@ -74,7 +74,7 @@ export default function SchedulerComponent({
                 {dateRange.dates.map((date) => (
                   <TableHead
                     key={date}
-                    className={`text-center min-w-30 border-x py-2 space-y-2 ${
+                    className={`text-center min-w-30 border-x py-2 space-y-1.5 ${
                       isToday(date) ? "bg-primary/10" : ""
                     }`}
                   >
