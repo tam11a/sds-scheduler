@@ -35,7 +35,7 @@ export function ScheduleDialog({
   onDelete,
 }: ScheduleDialogProps) {
   const [formData, setFormData] = useState<Schedule>(() => {
-    if (schedule) return schedule;
+    if (schedule) return schedule as Schedule;
 
     const startDate = defaultDate || new Date();
     startDate.setHours(9, 0, 0, 0);
@@ -49,7 +49,7 @@ export function ScheduleDialog({
       work_address: "",
       shift_bonus: 0,
       instructions: "",
-    };
+    } as Schedule;
   });
 
   const handleSubmit = (e: React.FormEvent) => {

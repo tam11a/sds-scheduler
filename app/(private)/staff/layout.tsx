@@ -35,6 +35,7 @@ export default function StaffLayout({
           </ToggleGroupItem>
         </ToggleGroup>
       }
+      view_toggle
       action={
         <>
           <Button variant={"outline"} disabled>

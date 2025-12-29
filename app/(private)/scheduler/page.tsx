@@ -1,18 +1,33 @@
+"use client";
+
 import { listStaff } from "@/app/api/staff/list";
 import { listSchedules } from "@/app/api/schedule/list";
-import { use, useEffect } from "react";
+import { useEffect, useState } from "react";
+import SchedulerComponent from "./_components/scheduler";
+import { Schedule, Staff } from "@/lib/generated/prisma/client";
+import useList from "@/components/list/useList";
 
 export default function SchedulerPage() {
-  const staffResponse = use(listStaff());
-  const schedulesResponse = use(listSchedules());
+  const { search } = useList();
 
-  useEffect(() => {}, []);
+  const [staffs, setStaffs] = useState<Staff[]>([]);
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
 
-  console.log(
-    "Scheduler Page Data:",
-    staffResponse.data,
-    schedulesResponse.data
+  useEffect(() => {
+    async function fetchData() {
+      const staffResponse = await listStaff({
+        search,
+      });
+      const schedulesResponse = await listSchedules();
+      setStaffs(staffResponse.data);
+      setSchedules(schedulesResponse.data);
+    }
+    fetchData();
+  }, [search]);
+
+  return (
+    <div>
+      <SchedulerComponent staffs={staffs} schedules={schedules} />
+    </div>
   );
-
-  return <div>Scheduler Page</div>;
 }

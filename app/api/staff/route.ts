@@ -1,26 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listSchedules } from "./list";
-import { createSchedule } from "./create";
-import { updateSchedule } from "./update";
-import { deleteSchedule } from "./delete";
+import { listStaff } from "./list";
+import { createStaff } from "./create";
+import { updateStaff } from "./update";
+import { deleteStaff } from "./delete";
+import { StaffStatus } from "@/lib/generated/prisma/enums";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const startDate = searchParams.get("startDate");
-  const endDate = searchParams.get("endDate");
-  const staffIds = searchParams.get("staffIds");
+  const search = searchParams.get("search") || "";
+  const status = searchParams.get("status") || undefined;
 
-  if (!startDate || !endDate) {
-    return NextResponse.json(
-      { success: false, error: "startDate and endDate are required" },
-      { status: 400 }
-    );
-  }
-
-  const response = await listSchedules({
-    startDate: new Date(startDate),
-    endDate: new Date(endDate),
-    staffIds: staffIds ? JSON.parse(staffIds) : undefined,
+  const response = await listStaff({
+    search,
+    status: status as StaffStatus,
   });
 
   return NextResponse.json(response);
@@ -29,10 +21,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const response = await createSchedule({
+    const response = await createStaff({
       ...body,
-      work_time_start: new Date(body.work_time_start),
-      work_time_end: new Date(body.work_time_end),
+      preferred_work_starting_date: body.preferred_work_starting_date
+        ? new Date(body.preferred_work_starting_date)
+        : undefined,
     });
     return NextResponse.json(response);
   } catch {
@@ -46,13 +39,10 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const response = await updateSchedule({
+    const response = await updateStaff({
       ...body,
-      work_time_start: body.work_time_start
-        ? new Date(body.work_time_start)
-        : undefined,
-      work_time_end: body.work_time_end
-        ? new Date(body.work_time_end)
+      preferred_work_starting_date: body.preferred_work_starting_date
+        ? new Date(body.preferred_work_starting_date)
         : undefined,
     });
     return NextResponse.json(response);
@@ -75,6 +65,6 @@ export async function DELETE(request: NextRequest) {
     );
   }
 
-  const response = await deleteSchedule(parseInt(id));
+  const response = await deleteStaff(parseInt(id));
   return NextResponse.json(response);
 }

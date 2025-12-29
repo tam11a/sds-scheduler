@@ -18,7 +18,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { notFound } from "next/navigation";
 
 export default function StaffPage() {
   const { search, view } = useList();
