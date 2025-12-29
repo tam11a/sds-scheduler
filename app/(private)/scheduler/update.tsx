@@ -128,7 +128,7 @@ export default function UpdateSchedule({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent>
-        <ScrollArea className="h-full pr-4">
+        <ScrollArea className="h-full">
           <SheetHeader>
             <SheetTitle>Edit Schedule</SheetTitle>
             <SheetDescription>
@@ -138,7 +138,10 @@ export default function UpdateSchedule({
           <Separator className="my-4" />
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 px-4"
+            >
               {/* Date & Time Selection */}
               <FormField
                 control={form.control}
@@ -246,7 +249,7 @@ export default function UpdateSchedule({
                 )}
               />
 
-              <SheetFooter className="pt-4">
+              <SheetFooter className="pt-4 px-0!">
                 <div className="w-full space-y-4">
                   {/* Schedule Confirmation Card */}
                   <div className="rounded-lg bg-muted p-4 space-y-2">
