@@ -10,17 +10,43 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import useDrawer from "@/hooks/use-drawer/use-drawer";
 import { Schedule, Staff } from "@/lib/generated/prisma/browser";
 import moment from "moment";
-import { Calendar, MapPin, DollarSign, FileText, User } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  DollarSign,
+  FileText,
+  User,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import NotApplicable from "@/components/ui/not-applicable";
+import { toast } from "sonner";
 
-export default function ScheduleDetails() {
+export default function ScheduleDetails({
+  onRefetch,
+}: {
+  onRefetch?: () => void;
+}) {
   const { scheduleDetailsId, setScheduleDetailsId } = useDrawer();
   const [schedule, setSchedule] = useState<
     (Schedule & { staff: Staff }) | null
   >(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const isOpen = scheduleDetailsId > 0;
 
@@ -37,7 +63,10 @@ export default function ScheduleDetails() {
       try {
         // Fetch schedule details with staff included
         const scheduleRes = await fetch(
-          `/api/schedule?id=${scheduleDetailsId}`
+          `/api/schedule?id=${scheduleDetailsId}`,
+          {
+            next: { tags: [`schedule-${scheduleDetailsId}`] },
+          }
         );
         const scheduleData = await scheduleRes.json();
 
@@ -76,15 +105,72 @@ export default function ScheduleDetails() {
     return `${hours}h ${minutes}m`;
   };
 
+  const handleDelete = async () => {
+    if (!schedule) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/schedule?id=${schedule.id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success("Schedule deleted", {
+          description: "The schedule has been successfully deleted.",
+        });
+        setShowDeleteDialog(false);
+        onRefetch?.();
+        handleClose();
+      } else {
+        toast.error("Error", {
+          description: data.error || "Failed to delete schedule",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to delete schedule:", error);
+      toast.error("Error", {
+        description: "Failed to delete schedule",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleEdit = () => {
+    // TODO: Implement edit functionality
+    toast.info("Edit Feature", {
+      description: "Edit functionality will be implemented soon.",
+    });
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <SheetContent>
         <ScrollArea className="h-full">
           <SheetHeader>
-            <SheetTitle>Schedule Details</SheetTitle>
-            <SheetDescription>
-              View detailed information about this schedule.
-            </SheetDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <SheetTitle>Schedule Details</SheetTitle>
+                <SheetDescription>
+                  View detailed information about this schedule.
+                </SheetDescription>
+              </div>
+              {schedule && (
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={handleEdit}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              )}
+            </div>
           </SheetHeader>
           <Separator className="mb-4 mt-0.5" />
 
@@ -206,6 +292,31 @@ export default function ScheduleDetails() {
           )}
         </ScrollArea>
       </SheetContent>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Schedule</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this schedule for{" "}
+              {schedule?.staff.full_name} on{" "}
+              {schedule &&
+                moment(schedule.work_time_start).format("MMM DD, YYYY")}
+              ? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Sheet>
   );
 }

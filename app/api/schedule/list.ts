@@ -2,14 +2,13 @@
 import { prisma } from "@/lib/prisma";
 
 interface ScheduleFilters {
-  startDate: Date;
-  endDate: Date;
+  startDate?: Date;
+  endDate?: Date;
   staffIds?: number[];
 }
 
 export async function listSchedules(filters?: ScheduleFilters) {
   try {
-    console.log(filters);
     const schedules = await prisma.schedule.findMany({
       where: {
         work_time_start: {
@@ -33,8 +32,6 @@ export async function listSchedules(filters?: ScheduleFilters) {
         work_time_start: "asc",
       },
     });
-
-    console.log("Fetched Schedules:", schedules);
 
     return {
       success: true,

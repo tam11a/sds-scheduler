@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import ListSearch from "./Search";
 import ViewToggle from "./ViewToggle";
+import { Suspense } from "react";
 
 export default function ListLayout({
   children,
@@ -18,21 +19,23 @@ export default function ListLayout({
   action?: React.ReactNode;
 }) {
   return (
-    <div>
-      <header className="flex justify-between items-center gap-2 pb-2">
-        <div>{primary_action || <ListSearch />}</div>
-        <div
-          className={cn(
-            "flex-1 inline-flex items-center gap-2",
-            secondary_centered && "justify-center"
-          )}
-        >
-          {view_toggle && <ViewToggle />}
-          {secondary_action}
-        </div>
-        <div className="inline-flex gap-2">{action}</div>
-      </header>
-      <main>{children}</main>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <div>
+        <header className="flex justify-between items-center gap-2 pb-2">
+          <div>{primary_action || <ListSearch />}</div>
+          <div
+            className={cn(
+              "flex-1 inline-flex items-center gap-2",
+              secondary_centered && "justify-center"
+            )}
+          >
+            {view_toggle && <ViewToggle />}
+            {secondary_action}
+          </div>
+          <div className="inline-flex gap-2">{action}</div>
+        </header>
+        <main>{children}</main>
+      </div>
+    </Suspense>
   );
 }

@@ -27,7 +27,6 @@ import { WeekPicker } from "@/components/scheduler/WeekPicker";
 import { MonthPicker } from "@/components/scheduler/MonthPicker";
 import { useState } from "react";
 import useDrawer from "@/hooks/use-drawer/use-drawer";
-import ScheduleDetails from "./details";
 
 export default function StaffLayout({
   children,
@@ -126,7 +125,6 @@ export default function StaffLayout({
       }
     >
       {children}
-      <ScheduleDetails />
     </ListLayout>
   );
 }

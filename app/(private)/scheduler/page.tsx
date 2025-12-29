@@ -7,10 +7,11 @@ import SchedulerComponent from "./_components/scheduler";
 import { Schedule, Staff } from "@/lib/generated/prisma/client";
 import useList from "@/components/list/useList";
 import CreateSchedule from "./create";
+import ScheduleDetails from "./details";
 
 export default function SchedulerPage() {
   const { search } = useList();
-
+  const [loading, setLoading] = useState(true);
   const [staffs, setStaffs] = useState<Staff[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
 
@@ -19,14 +20,19 @@ export default function SchedulerPage() {
       const staffResponse = await listStaff({
         search,
       });
-      const schedulesResponse = await listSchedules();
+      const schedulesResponse = await fetch(`/api/schedule`, {
+        next: { tags: ["schedule-list"] },
+      });
+      const schedulesData = await schedulesResponse.json();
+
       setStaffs(staffResponse.data);
-      setSchedules(schedulesResponse.data);
+      setSchedules(schedulesData.data);
+      setLoading(false);
     }
     fetchData();
   }, [search]);
 
-  const handleScheduleCreated = () => {
+  const handleScheduleRefetch = () => {
     // Refetch schedules after creation
     listSchedules().then((response) => {
       setSchedules(response.data);
@@ -35,8 +41,13 @@ export default function SchedulerPage() {
 
   return (
     <div>
-      <SchedulerComponent staffs={staffs} schedules={schedules} />
-      <CreateSchedule staffList={staffs} onSuccess={handleScheduleCreated} />
+      <SchedulerComponent
+        staffs={staffs}
+        schedules={schedules}
+        loading={loading}
+      />
+      <CreateSchedule staffList={staffs} onSuccess={handleScheduleRefetch} />
+      <ScheduleDetails onRefetch={handleScheduleRefetch} />
     </div>
   );
 }

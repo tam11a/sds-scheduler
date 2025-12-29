@@ -18,17 +18,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response);
   }
 
-  // Otherwise, return list of schedules
-  if (!startDate || !endDate) {
-    return NextResponse.json(
-      { success: false, error: "startDate and endDate are required" },
-      { status: 400 }
-    );
-  }
-
   const response = await listSchedules({
-    startDate: new Date(startDate),
-    endDate: new Date(endDate),
+    ...(startDate && endDate
+      ? { startDate: new Date(startDate), endDate: new Date(endDate) }
+      : {}),
     staffIds: staffIds ? JSON.parse(staffIds) : undefined,
   });
 

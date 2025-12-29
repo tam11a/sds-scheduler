@@ -3,6 +3,7 @@ import { Schedule } from "@/lib/generated/prisma/client";
 import { PrismaClientKnownRequestError } from "@/lib/generated/prisma/internal/prismaNamespace";
 import { prisma } from "@/lib/prisma";
 import { handlePrismaError, ApiResponse } from "@/lib/prisma-error-handler";
+import { revalidateTag } from "next/cache";
 
 export interface UpdateScheduleInput {
   id: number;
@@ -37,6 +38,9 @@ export async function updateSchedule(
         },
       },
     });
+
+    revalidateTag("schedule-list", "max");
+    revalidateTag(`schedule-${data.id}`, "max");
 
     return {
       success: true,

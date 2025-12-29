@@ -8,7 +8,7 @@ import CreateStaff from "./create";
 import useStaffFilter from "./useStaffFilter";
 import { StaffStatus } from "@/lib/generated/prisma/enums";
 
-export default function StaffLayout({
+export default function StaffClientLayout({
   children,
 }: {
   children: React.ReactNode;

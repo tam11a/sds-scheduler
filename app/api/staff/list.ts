@@ -2,6 +2,7 @@
 
 import { StaffStatus } from "@/lib/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
+import { cacheTag } from "next/cache";
 
 interface StaffFilters {
   search?: string;
@@ -9,6 +10,8 @@ interface StaffFilters {
 }
 
 export async function listStaff(filters?: StaffFilters) {
+  "use cache";
+  cacheTag("staff-list");
   try {
     const staffMembers = await prisma.staff.findMany({
       where: {

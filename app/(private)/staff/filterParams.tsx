@@ -1,5 +1,5 @@
 import { StaffStatus } from "@/lib/generated/prisma/enums";
-import { parseAsStringEnum } from "nuqs/server";
+import { createLoader, parseAsStringEnum } from "nuqs/server";
 
 export const staffFilterParams = {
   status: parseAsStringEnum([
@@ -11,3 +11,5 @@ export const staffFilterParams = {
     .withDefault("ALL")
     .withOptions({ clearOnDefault: true }),
 };
+
+export const staffParamsCache = createLoader(staffFilterParams);

@@ -25,19 +25,27 @@ import { Plus } from "lucide-react";
 import { ScheduleCard } from "./schedule-card";
 import { parseAsInteger, parseAsIsoDateTime, useQueryState } from "nuqs";
 import useDrawer from "@/hooks/use-drawer/use-drawer";
+import { RefreshCcwIcon, Users2 } from "lucide-react";
+
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 interface SchedulerComponentProps {
   staffs: Staff[];
   schedules: Schedule[];
+  loading: boolean;
 }
 
 export default function SchedulerComponent({
   staffs,
   schedules,
+  loading,
 }: SchedulerComponentProps) {
-  console.log("Staffs in SchedulerComponent:", staffs);
-  console.log("Schedules in SchedulerComponent:", schedules);
-
   const { search, setSearch } = useList();
   const { view, currentDate } = useSchedulerFilter();
 
@@ -97,6 +105,41 @@ export default function SchedulerComponent({
     setPreSelectedDate(localDate);
     setCreateScheduleOpen(true);
   };
+
+  // Loading State
+  if (loading) {
+    return (
+      <Empty className="from-muted/80 to-background h-full bg-linear-to-b from-30%">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <RefreshCcwIcon className="animate-spin" />
+          </EmptyMedia>
+          <EmptyTitle>Loading Staff...</EmptyTitle>
+          <EmptyDescription>
+            Please wait while we load the staff members.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
+
+  // No Data State
+  if (staffs.length === 0) {
+    return (
+      <Empty className="from-muted/80 to-background h-full bg-linear-to-b from-30%">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Users2 />
+          </EmptyMedia>
+          <EmptyTitle>No Staff</EmptyTitle>
+          <EmptyDescription>
+            No staff members found. Try adjusting your filters or adding new
+            staff.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
   return (
     <section className="space-y-4">
