@@ -53,6 +53,7 @@ export default function StaffPage() {
             Please wait while we load the staff members.
           </EmptyDescription>
         </EmptyHeader>
+        <CreateStaff onSuccess={fetchStaff} />
       </Empty>
     );
   }
@@ -71,6 +72,7 @@ export default function StaffPage() {
             staff.
           </EmptyDescription>
         </EmptyHeader>
+        <CreateStaff onSuccess={fetchStaff} />
       </Empty>
     );
   }

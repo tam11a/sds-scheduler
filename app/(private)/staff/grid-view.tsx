@@ -40,14 +40,14 @@ export default function GridView({ staffList }: { staffList: Staff[] }) {
             <table className="text-sm w-full">
               <tbody>
                 <tr>
-                  <td className="font-medium pr-2 min-w-1/3 py-1">Email</td>{" "}
+                  <td className="font-medium pr-2 min-w-1/3 py-1">Email</td>
                   {/* 
                   TODO: Handle long email addresses with ellipsis and tooltip
                   */}
                   <td className="text-ellipsis">{staff.email}</td>
                 </tr>
                 <tr>
-                  <td className="font-medium pr-2 min-w-1/3 py-1">Phone</td>{" "}
+                  <td className="font-medium pr-2 min-w-1/3 py-1">Phone</td>
                   <td className="text-ellipsis">{staff.phone}</td>
                 </tr>
                 <tr>
@@ -59,7 +59,7 @@ export default function GridView({ staffList }: { staffList: Staff[] }) {
                   </td>
                 </tr>
                 <tr>
-                  <td className="font-medium pr-2 min-w-1/3 py-1">Status</td>{" "}
+                  <td className="font-medium pr-2 min-w-1/3 py-1">Status</td>
                   <td>
                     <Badge
                       variant="default"
