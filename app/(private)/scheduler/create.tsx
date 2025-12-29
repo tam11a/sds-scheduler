@@ -29,7 +29,7 @@ import {
   scheduleCreateSchema,
 } from "@/app/api/schedule/schema";
 import { toast } from "sonner";
-import { parseAsBoolean, useQueryState } from "nuqs";
+import { parseAsInteger, parseAsIsoDateTime, useQueryState } from "nuqs";
 import {
   Select,
   SelectContent,
@@ -42,15 +42,8 @@ import {
 import { useEffect } from "react";
 import * as React from "react";
 import { Staff } from "@/lib/generated/prisma/browser";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
 import moment from "moment";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 import useDrawer from "@/hooks/use-drawer/use-drawer";
 
 interface CreateScheduleProps {
@@ -65,6 +58,16 @@ export default function CreateSchedule({
   const { createScheduleOpen: open, setCreateScheduleOpen: onOpenChange } =
     useDrawer();
 
+  // Pre-selected values from query params
+  const [preSelectedStaffId, setPreSelectedStaffId] = useQueryState(
+    "pre-staff-id",
+    parseAsInteger.withOptions({ clearOnDefault: true })
+  );
+  const [preSelectedDate, setPreSelectedDate] = useQueryState(
+    "pre-date",
+    parseAsIsoDateTime.withOptions({ clearOnDefault: true })
+  );
+
   const form = useForm<CreateScheduleInput>({
     resolver: zodResolver(scheduleCreateSchema),
     defaultValues: {
@@ -73,16 +76,12 @@ export default function CreateSchedule({
   });
 
   // Local state for date, start time, and duration
-  const [selectedDate, setSelectedDate] = React.useState<Date>();
-  const [startTime, setStartTime] = React.useState<string>("09:00");
+  const [startDateTime, setStartDateTime] = React.useState<Date>();
   const [durationHours, setDurationHours] = React.useState<number>(8);
 
-  // Calculate and update form values when date/time/duration changes
+  // Calculate and update form values when start date/time and duration changes
   React.useEffect(() => {
-    if (selectedDate && startTime) {
-      const startDateTime = moment(selectedDate)
-        .format("YYYY-MM-DD")
-        .concat("T", startTime);
+    if (startDateTime) {
       const endDateTime = moment(startDateTime)
         .add(durationHours, "hours")
         .toISOString();
@@ -90,20 +89,45 @@ export default function CreateSchedule({
       form.setValue("work_time_start", moment(startDateTime).toISOString());
       form.setValue("work_time_end", endDateTime);
     }
-  }, [selectedDate, startTime, durationHours, form]);
+  }, [startDateTime, durationHours, form]);
 
   // Reset form when sheet opens
   useEffect(() => {
     if (open) {
+      // Use pre-selected values if available
+      const staffId = preSelectedStaffId || undefined;
+      const selectedDate = preSelectedDate
+        ? new Date(preSelectedDate)
+        : undefined;
+
+      // Set default start time to 9 AM on the selected date
+      const defaultStartTime = selectedDate
+        ? moment(selectedDate).hour(9).minute(0).second(0).toDate()
+        : undefined;
+
       form.reset({
         shift_bonus: 0,
+        staff_id: staffId,
       });
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedDate(undefined);
-      setStartTime("09:00");
+      setStartDateTime(defaultStartTime);
       setDurationHours(2);
     }
-  }, [open, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // Clear pre-selected values after form is populated
+  useEffect(() => {
+    if (open && (preSelectedStaffId || preSelectedDate)) {
+      // Small delay to ensure form is populated first
+      const timer = setTimeout(() => {
+        if (preSelectedStaffId) setPreSelectedStaffId(null);
+        if (preSelectedDate) setPreSelectedDate(null);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   async function onSubmit(values: CreateScheduleInput) {
     try {
@@ -188,54 +212,18 @@ export default function CreateSchedule({
                   )}
                 />
 
-                {/* Date Selection */}
+                {/* Start Date & Time */}
                 <FormItem className="flex flex-col">
                   <FormLabel>
-                    Date <span className="text-destructive">*</span>
+                    Start Date & Time{" "}
+                    <span className="text-destructive">*</span>
                   </FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !selectedDate && "text-muted-foreground"
-                        )}
-                      >
-                        {selectedDate ? (
-                          moment(selectedDate).format("MMM DD, YYYY")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    Select the date for this shift.
-                  </FormDescription>
-                </FormItem>
-
-                {/* Start Time */}
-                <FormItem>
-                  <FormLabel>
-                    Start Time <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <Input
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
+                  <DateTimePicker
+                    value={startDateTime}
+                    onChange={setStartDateTime}
+                    placeholder="Select start date and time"
                   />
-                  <FormDescription>
-                    What time does the shift start?
-                  </FormDescription>
+                  <FormDescription>When does the shift start?</FormDescription>
                 </FormItem>
 
                 {/* Duration */}
@@ -332,31 +320,20 @@ export default function CreateSchedule({
               </div>
 
               {/* Schedule Confirmation Card */}
-              {selectedDate && startTime && durationHours > 0 && (
+              {startDateTime && durationHours > 0 && (
                 <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
                   <h4 className="font-semibold mb-2">Schedule Summary</h4>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Start:</span>
                       <span className="font-medium">
-                        {moment(selectedDate)
-                          .format("YYYY-MM-DD")
-                          .concat("T", startTime) &&
-                          moment(
-                            moment(selectedDate)
-                              .format("YYYY-MM-DD")
-                              .concat("T", startTime)
-                          ).format("MMM DD, YYYY • hh:mm A")}
+                        {moment(startDateTime).format("MMM DD, YYYY • hh:mm A")}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">End:</span>
                       <span className="font-medium">
-                        {moment(
-                          moment(selectedDate)
-                            .format("YYYY-MM-DD")
-                            .concat("T", startTime)
-                        )
+                        {moment(startDateTime)
                           .add(durationHours, "hours")
                           .format("MMM DD, YYYY • hh:mm A")}
                       </span>

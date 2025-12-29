@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -24,6 +22,9 @@ import {
 import moment from "moment";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
+import { ScheduleCard } from "./schedule-card";
+import { parseAsInteger, parseAsIsoDateTime, useQueryState } from "nuqs";
+import useDrawer from "@/hooks/use-drawer/use-drawer";
 
 interface SchedulerComponentProps {
   staffs: Staff[];
@@ -40,6 +41,17 @@ export default function SchedulerComponent({
   const { search, setSearch } = useList();
   const { view, currentDate } = useSchedulerFilter();
 
+  // Query states for pre-filling schedule creation form
+  const [, setPreSelectedStaffId] = useQueryState(
+    "pre-staff-id",
+    parseAsInteger.withOptions({ clearOnDefault: true })
+  );
+  const [, setPreSelectedDate] = useQueryState(
+    "pre-date",
+    parseAsIsoDateTime.withOptions({ clearOnDefault: true })
+  );
+  const { setCreateScheduleOpen } = useDrawer();
+
   // Get date range based on view
   const dateRange =
     view === SchedulerView.WEEKLY
@@ -52,6 +64,38 @@ export default function SchedulerComponent({
         s.staff_id === staffId &&
         moment(s.work_time_start).format("YYYY-MM-DD") === date
     );
+  };
+
+  // Calculate total hours for a staff member in the visible date range
+  const getTotalHoursForStaff = (staffId: number) => {
+    const staffSchedules = schedules.filter((s) => {
+      const scheduleDate = moment(s.work_time_start).format("YYYY-MM-DD");
+      return s.staff_id === staffId && dateRange.dates.includes(scheduleDate);
+    });
+
+    const totalMinutes = staffSchedules.reduce((total, schedule) => {
+      const start = moment(schedule.work_time_start);
+      const end = moment(schedule.work_time_end);
+      return total + end.diff(start, "minutes");
+    }, 0);
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (minutes === 0) {
+      return `${hours} hours`;
+    }
+    return `${hours}h ${minutes}m`;
+  };
+
+  // Handle empty cell click to create schedule
+  const handleEmptyCellClick = (staffId: number, date: string) => {
+    setPreSelectedStaffId(staffId);
+    // Parse date string as local date (YYYY-MM-DD)
+    const [year, month, day] = date.split("-").map(Number);
+    const localDate = new Date(year, month - 1, day);
+    setPreSelectedDate(localDate);
+    setCreateScheduleOpen("true");
   };
 
   return (
@@ -107,7 +151,7 @@ export default function SchedulerComponent({
                     <div className="flex flex-col">
                       <span className="font-medium">{staff.full_name}</span>
                       <span className="text-xs text-muted-foreground">
-                        {staff.email}
+                        {getTotalHoursForStaff(staff.id)}
                       </span>
                     </div>
                   </TableCell>
@@ -124,34 +168,22 @@ export default function SchedulerComponent({
                         {cellSchedules.length > 0 ? (
                           <div className="space-y-1">
                             {cellSchedules.map((schedule) => (
-                              <div
+                              <ScheduleCard
                                 key={schedule.id}
-                                className="bg-primary text-primary-foreground text-xs p-2 rounded cursor-pointer hover:bg-primary/90 transition-colors"
-                              >
-                                <div className="font-medium">
-                                  {moment(schedule.work_time_start).format(
-                                    "HH:mm"
-                                  )}{" "}
-                                  -{" "}
-                                  {moment(schedule.work_time_end).format(
-                                    "HH:mm"
-                                  )}
-                                </div>
-                                {schedule.work_address && (
-                                  <div className="truncate opacity-90">
-                                    {schedule.work_address}
-                                  </div>
-                                )}
-                                {schedule.shift_bonus && (
-                                  <div className="text-[10px] opacity-80">
-                                    Bonus: ${schedule.shift_bonus}
-                                  </div>
-                                )}
-                              </div>
+                                schedule={schedule}
+                                mode={
+                                  cellSchedules.length === 1
+                                    ? "detailed"
+                                    : "compact"
+                                }
+                              />
                             ))}
                           </div>
                         ) : (
-                          <div className="h-full min-h-15 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          <div
+                            className="h-full min-h-15 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                            onClick={() => handleEmptyCellClick(staff.id, date)}
+                          >
                             <span className="text-xs text-muted-foreground">
                               <Plus className="inline-block w-4 h-4 animate-pulse" />
                             </span>
