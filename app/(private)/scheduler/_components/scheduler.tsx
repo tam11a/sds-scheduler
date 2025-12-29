@@ -95,7 +95,7 @@ export default function SchedulerComponent({
     const [year, month, day] = date.split("-").map(Number);
     const localDate = new Date(year, month - 1, day);
     setPreSelectedDate(localDate);
-    setCreateScheduleOpen("true");
+    setCreateScheduleOpen(true);
   };
 
   return (
@@ -178,6 +178,16 @@ export default function SchedulerComponent({
                                 }
                               />
                             ))}
+                            <div
+                              className="h-full min-h-3 mt-2 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                              onClick={() =>
+                                handleEmptyCellClick(staff.id, date)
+                              }
+                            >
+                              <span className="text-xs text-muted-foreground">
+                                <Plus className="inline-block w-4 h-4 animate-pulse" />
+                              </span>
+                            </div>
                           </div>
                         ) : (
                           <div

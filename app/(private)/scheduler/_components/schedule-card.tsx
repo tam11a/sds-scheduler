@@ -13,7 +13,7 @@ export function ScheduleCard({ schedule, mode, onClick }: ScheduleCardProps) {
     <div
       onClick={onClick}
       className={cn(
-        "bg-primary text-primary-foreground rounded cursor-pointer hover:bg-primary/90 transition-colors",
+        "bg-primary/20 text-primary rounded cursor-pointer hover:bg-primary/10 transition-colors",
         mode === "compact" ? "text-xs p-1.5 px-2" : "text-xs p-2"
       )}
     >

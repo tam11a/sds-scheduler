@@ -109,7 +109,6 @@ export default function CreateSchedule({
         shift_bonus: 0,
         staff_id: staffId,
       });
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStartDateTime(defaultStartTime);
       setDurationHours(2);
     }
