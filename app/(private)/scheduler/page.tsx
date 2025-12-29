@@ -20,9 +20,7 @@ export default function SchedulerPage() {
       const staffResponse = await listStaff({
         search,
       });
-      const schedulesResponse = await fetch(`/api/schedule`, {
-        next: { tags: ["schedule-list"] },
-      });
+      const schedulesResponse = await fetch(`/api/schedule`, {});
       const schedulesData = await schedulesResponse.json();
 
       setStaffs(staffResponse.data);

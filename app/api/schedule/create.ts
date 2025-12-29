@@ -94,10 +94,19 @@ export async function createSchedule(
             id: true,
             full_name: true,
             avatar: true,
+            status: true,
           },
         },
       },
     });
+
+    // Update staff status from ONBOARDING to ACTIVE if this is their first schedule
+    if (schedule.staff.status === "ONBOARDING") {
+      await prisma.staff.update({
+        where: { id: data.staff_id },
+        data: { status: "ACTIVE" },
+      });
+    }
 
     revalidateTag("schedule-list", "max");
 
