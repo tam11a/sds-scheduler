@@ -8,6 +8,7 @@ import useStaffFilter from "./useStaffFilter";
 import { Staff } from "@/lib/generated/prisma/client";
 import GridView from "./grid-view";
 import TableView from "./table-view";
+import CreateStaff from "./create";
 
 import { RefreshCcwIcon, Users2 } from "lucide-react";
 
@@ -25,17 +26,18 @@ export default function StaffPage() {
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchStaff = async () => {
+    const response = await listStaff({
+      search,
+      status,
+    });
+    setStaffList(response.data as Staff[]);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    async function fetchStaff() {
-      const response = await listStaff({
-        search,
-        status,
-      });
-      setStaffList(response.data as Staff[]);
-      setLoading(false);
-      console.log("Search Param:", search, response.data);
-    }
     fetchStaff();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, status]);
 
   // Loading State
@@ -75,12 +77,15 @@ export default function StaffPage() {
 
   // Data Loaded State
   return (
-    <div>
-      {view === "table-view" ? (
-        <TableView staffList={staffList} />
-      ) : (
-        <GridView staffList={staffList} />
-      )}
-    </div>
+    <>
+      <div>
+        {view === "table-view" ? (
+          <TableView staffList={staffList} />
+        ) : (
+          <GridView staffList={staffList} />
+        )}
+      </div>
+      <CreateStaff onSuccess={fetchStaff} />
+    </>
   );
 }
