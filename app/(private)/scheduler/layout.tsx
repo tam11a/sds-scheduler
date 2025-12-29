@@ -3,8 +3,13 @@
 import ListLayout from "@/components/list/ListLayout";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import useSchedulerFilter from "@/hooks/use-scheduler-filter";
+import {
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+} from "lucide-react";
+import useSchedulerFilter from "@/hooks/use-scheduler-filter/use-scheduler-filter";
 import { SchedulerView } from "@/hooks/use-scheduler-filter/params";
 import {
   getWeekRange,
@@ -13,7 +18,15 @@ import {
   navigateMonth,
   formatDate,
 } from "@/lib/scheduler-date-handler";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { WeekPicker } from "@/components/scheduler/WeekPicker";
+import { MonthPicker } from "@/components/scheduler/MonthPicker";
 import { useState } from "react";
+import useDrawer from "@/hooks/use-drawer/use-drawer";
 
 export default function StaffLayout({
   children,
@@ -21,7 +34,8 @@ export default function StaffLayout({
   children: React.ReactNode;
 }) {
   const { view, setView, currentDate, setCurrentDate } = useSchedulerFilter();
-
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const { setCreateScheduleOpen } = useDrawer();
   // Get date range based on view
   const dateRange =
     view === SchedulerView.WEEKLY
@@ -44,10 +58,6 @@ export default function StaffLayout({
     setCurrentDate(newDate);
   };
 
-  const handleToday = () => {
-    setCurrentDate(new Date());
-  };
-
   return (
     <ListLayout
       primary_action={
@@ -58,26 +68,44 @@ export default function StaffLayout({
           <Button variant="outline" size="icon" onClick={handleNext}>
             <ChevronRight className="h-4 w-4" />
           </Button>
-          <span className="font-semibold text-lg ml-2">
-            {view === SchedulerView.WEEKLY
-              ? `${formatDate(dateRange.start, "MMM DD")} - ${formatDate(
-                  dateRange.end,
-                  "MMM DD, YYYY"
-                )}`
-              : formatDate(currentDate, "MMMM YYYY")}
-          </span>
+          <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="ml-2">
+                <CalendarIcon className="h-4 w-4 mr-2" />
+                <span className="font-semibold">
+                  {view === SchedulerView.WEEKLY
+                    ? `${formatDate(dateRange.start, "MMM DD")} - ${formatDate(
+                        dateRange.end,
+                        "MMM DD, YYYY"
+                      )}`
+                    : formatDate(currentDate, "MMMM YYYY")}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              {view === SchedulerView.WEEKLY ? (
+                <WeekPicker
+                  selected={currentDate}
+                  onSelect={setCurrentDate}
+                  onClose={() => setDatePickerOpen(false)}
+                />
+              ) : (
+                <MonthPicker
+                  selected={currentDate}
+                  onSelect={setCurrentDate}
+                  onClose={() => setDatePickerOpen(false)}
+                />
+              )}
+            </PopoverContent>
+          </Popover>
         </div>
       }
-      secondary_action={<></>}
       action={
         <>
-          <Button variant={"outline"} onClick={handleToday}>
-            Today
-          </Button>
           <ToggleGroup
             type="single"
             value={view}
-            onValueChange={setView}
+            onValueChange={(value) => value && setView(value as SchedulerView)}
             variant={"segmented"}
           >
             <ToggleGroupItem value={SchedulerView.WEEKLY}>
@@ -87,7 +115,10 @@ export default function StaffLayout({
               Monthly
             </ToggleGroupItem>
           </ToggleGroup>
-          <Button variant={"outline"}>
+          <Button
+            variant={"outline"}
+            onClick={() => setCreateScheduleOpen(true)}
+          >
             <Plus /> Schedule
           </Button>
         </>

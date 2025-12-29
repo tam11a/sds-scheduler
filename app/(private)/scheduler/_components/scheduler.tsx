@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Schedule, Staff } from "@/lib/generated/prisma/browser";
 import useList from "@/components/list/useList";
-import useSchedulerFilter from "@/hooks/use-scheduler-filter";
+import useSchedulerFilter from "@/hooks/use-scheduler-filter/use-scheduler-filter";
 import { SchedulerView } from "@/hooks/use-scheduler-filter/params";
 import {
   getWeekRange,

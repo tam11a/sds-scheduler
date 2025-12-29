@@ -39,17 +39,11 @@ import {
 } from "@/components/ui/select";
 import { createStaff } from "@/app/api/staff/create";
 import { toast } from "sonner";
-import { parseAsBoolean, useQueryState } from "nuqs";
+import useDrawer from "@/hooks/use-drawer/use-drawer";
 
 export default function CreateStaff() {
-  const [open, onOpenChange] = useQueryState(
-    "create-stuff",
-    parseAsBoolean
-      .withOptions({
-        clearOnDefault: true,
-      })
-      .withDefault(false)
-  );
+  const { createStaffOpen: open, setCreateStaffOpen: onOpenChange } =
+    useDrawer();
 
   const form = useForm<CreateStaffInput>({
     resolver: zodResolver(staffCreateSchema),

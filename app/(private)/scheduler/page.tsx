@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import SchedulerComponent from "./_components/scheduler";
 import { Schedule, Staff } from "@/lib/generated/prisma/client";
 import useList from "@/components/list/useList";
+import CreateSchedule from "./create";
 
 export default function SchedulerPage() {
   const { search } = useList();
@@ -25,9 +26,17 @@ export default function SchedulerPage() {
     fetchData();
   }, [search]);
 
+  const handleScheduleCreated = () => {
+    // Refetch schedules after creation
+    listSchedules().then((response) => {
+      setSchedules(response.data);
+    });
+  };
+
   return (
     <div>
       <SchedulerComponent staffs={staffs} schedules={schedules} />
+      <CreateSchedule staffList={staffs} onSuccess={handleScheduleCreated} />
     </div>
   );
 }

@@ -20,7 +20,7 @@ export default function StaffLayout({
         <ToggleGroup
           type="single"
           value={status}
-          onValueChange={setStatus}
+          onValueChange={(value) => value && setStatus(value as StaffStatus)}
           variant={"segmented"}
         >
           <ToggleGroupItem value={"ALL"}>All Staff</ToggleGroupItem>
