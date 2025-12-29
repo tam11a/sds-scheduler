@@ -71,6 +71,9 @@ export default function StaffLayout({
       secondary_action={<></>}
       action={
         <>
+          <Button variant={"outline"} onClick={handleToday}>
+            Today
+          </Button>
           <ToggleGroup
             type="single"
             value={view}
