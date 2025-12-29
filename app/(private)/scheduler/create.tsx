@@ -72,6 +72,7 @@ export default function CreateSchedule({
     resolver: zodResolver(scheduleCreateSchema),
     defaultValues: {
       shift_bonus: 0,
+      instructions: "",
     },
   });
 
