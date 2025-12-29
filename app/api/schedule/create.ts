@@ -19,6 +19,65 @@ export async function createSchedule(
   data: CreateScheduleInput
 ): Promise<ApiResponse<Schedule>> {
   try {
+    // Check for conflicting schedules
+    const conflictingSchedule = await prisma.schedule.findFirst({
+      where: {
+        staff_id: data.staff_id,
+        OR: [
+          // New schedule starts during an existing schedule
+          {
+            work_time_start: { lte: data.work_time_start },
+            work_time_end: { gt: data.work_time_start },
+          },
+          // New schedule ends during an existing schedule
+          {
+            work_time_start: { lt: data.work_time_end },
+            work_time_end: { gte: data.work_time_end },
+          },
+          // New schedule completely contains an existing schedule
+          {
+            work_time_start: { gte: data.work_time_start },
+            work_time_end: { lte: data.work_time_end },
+          },
+        ],
+      },
+      include: {
+        staff: {
+          select: {
+            full_name: true,
+          },
+        },
+      },
+    });
+
+    if (conflictingSchedule) {
+      const conflictStart = new Date(conflictingSchedule.work_time_start);
+      const conflictEnd = new Date(conflictingSchedule.work_time_end);
+      const formatTime = (date: Date) =>
+        date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      const formatDate = (date: Date) =>
+        date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+
+      return {
+        success: false,
+        error: `Schedule conflict: ${
+          conflictingSchedule.staff.full_name
+        } is already scheduled from ${formatTime(
+          conflictStart
+        )} to ${formatTime(conflictEnd)} on ${formatDate(
+          conflictStart
+        )}. Please choose a different time slot.`,
+      };
+    }
+
     const schedule = await prisma.schedule.create({
       data: {
         staff_id: data.staff_id,

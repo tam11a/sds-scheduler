@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import NotApplicable from "@/components/ui/not-applicable";
 import { toast } from "sonner";
+import UpdateSchedule from "./update";
 
 export default function ScheduleDetails({
   onRefetch,
@@ -46,13 +47,13 @@ export default function ScheduleDetails({
     (Schedule & { staff: Staff }) | null
   >(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const isOpen = scheduleDetailsId > 0;
 
   useEffect(() => {
     if (scheduleDetailsId <= 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSchedule(null);
       return;
     }
@@ -86,6 +87,23 @@ export default function ScheduleDetails({
       isMounted = false;
     };
   }, [scheduleDetailsId]);
+
+  const refetchScheduleDetails = async () => {
+    if (scheduleDetailsId <= 0) return;
+
+    try {
+      const scheduleRes = await fetch(`/api/schedule?id=${scheduleDetailsId}`, {
+        cache: "no-store",
+      });
+      const scheduleData = await scheduleRes.json();
+
+      if (scheduleData.success && scheduleData.data) {
+        setSchedule(scheduleData.data);
+      }
+    } catch (error) {
+      console.error("Failed to refetch schedule details:", error);
+    }
+  };
 
   const handleClose = () => {
     setScheduleDetailsId(0);
@@ -138,10 +156,13 @@ export default function ScheduleDetails({
   };
 
   const handleEdit = () => {
-    // TODO: Implement edit functionality
-    toast.info("Edit Feature", {
-      description: "Edit functionality will be implemented soon.",
-    });
+    setShowEditDialog(true);
+  };
+
+  const handleEditSuccess = () => {
+    // Refetch both the details and trigger parent list refresh
+    refetchScheduleDetails();
+    onRefetch?.();
   };
 
   return (
@@ -149,28 +170,10 @@ export default function ScheduleDetails({
       <SheetContent>
         <ScrollArea className="h-full">
           <SheetHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <SheetTitle>Schedule Details</SheetTitle>
-                <SheetDescription>
-                  View detailed information about this schedule.
-                </SheetDescription>
-              </div>
-              {schedule && (
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={handleEdit}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowDeleteDialog(true)}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
-              )}
-            </div>
+            <SheetTitle>Schedule Details</SheetTitle>
+            <SheetDescription>
+              View detailed information about this schedule.
+            </SheetDescription>
           </SheetHeader>
           <Separator className="mb-4 mt-0.5" />
 
@@ -267,6 +270,26 @@ export default function ScheduleDetails({
                 </div>
               )}
 
+              {/* Action Buttons */}
+              <div className="flex gap-2 pt-4 pb-2">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={handleEdit}
+                >
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit Schedule
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="flex-1"
+                  onClick={() => setShowDeleteDialog(true)}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Schedule
+                </Button>
+              </div>
+
               {/* Metadata */}
               <div className="pt-3 px-1">
                 <div className="space-y-2 text-xs text-muted-foreground">
@@ -317,6 +340,13 @@ export default function ScheduleDetails({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <UpdateSchedule
+        schedule={schedule}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onSuccess={handleEditSuccess}
+      />
     </Sheet>
   );
 }
